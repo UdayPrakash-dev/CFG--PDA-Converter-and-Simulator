@@ -19,5 +19,5 @@
 
 window.APP_CONFIG = {
   // ← Change this to your Render backend URL before deploying
-  API_BASE: 'http://localhost:4000',
+  API_BASE: 'https://cfg-pda-backend.onrender.com',
 };
