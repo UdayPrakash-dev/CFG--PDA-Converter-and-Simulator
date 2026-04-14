@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CFG → PDA Converter &amp; Simulator</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ HEADER ══ -->
+<header>
+  <div class="header-inner">
+    <span class="logo">⊢</span>
+    <div>
+      <h1>CFG → PDA Converter &amp; Simulator</h1>
+      <p class="subtitle">Context-Free Grammar · Pushdown Automaton · Non-Deterministic Simulation</p>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════════ MAIN GRID ══ -->
+<main>
+
+  <!-- ── LEFT PANEL: Input ──────────────────────────────────────────────── -->
+  <section class="panel" id="panel-input">
+    <h2>① Grammar Input</h2>
+
+    <label for="grammar-input">
+      CFG — one rule per line, alternatives separated by <code>|</code>
+    </label>
+    <textarea id="grammar-input" spellcheck="false" rows="7">S -> aSb | ε</textarea>
+
+    <div class="hint">
+      <strong>Syntax:</strong> <code>A -&gt; α | β</code> &nbsp;·&nbsp;
+      Use <code>ε</code>, <code>eps</code>, or <code>lambda</code> for the empty string.
+      Variables must be single uppercase letters.
+    </div>
+
+    <div class="presets">
+      <span>Presets:</span>
+      <button class="btn-preset" data-grammar="S -> aSb | ε">aⁿbⁿ</button>
+      <button class="btn-preset" data-grammar="S -> aSa | bSb | a | b | ε">Palindromes</button>
+      <button class="btn-preset" data-grammar="S -> AB&#10;A -> aA | a&#10;B -> bB | b">aⁿbᵐ</button>
+      <button class="btn-preset" data-grammar="S -> aS | bS | ε">a*b*</button>
+      <button class="btn-preset" data-grammar="S -> SS | aSb | ε">Balanced</button>
+    </div>
+
+    <div class="btn-row">
+      <button id="btn-convert" class="btn-primary">Convert to PDA</button>
+      <button id="btn-clear"   class="btn-ghost">Clear</button>
+    </div>
+
+    <!-- Simulate sub-panel (revealed after conversion) -->
+    <div id="simulate-area" class="hidden">
+      <hr />
+      <h2>② Simulate</h2>
+      <label for="sim-input">Input string (leave blank for ε)</label>
+      <div class="input-row">
+        <input id="sim-input" type="text" placeholder="e.g.  aabb" autocomplete="off" />
+        <button id="btn-simulate" class="btn-primary">Simulate</button>
+      </div>
+
+      <div id="generated-strings" class="hidden">
+        <p class="gen-label">Sample strings in language (length ≤ 6):</p>
+        <div id="string-chips"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RIGHT PANEL: Results ───────────────────────────────────────────── -->
+  <section class="panel" id="panel-results">
+
+    <!-- PDA Overview -->
+    <div id="pda-overview" class="hidden">
+      <h2>PDA Overview</h2>
+      <div id="pda-summary" class="summary-grid"></div>
+    </div>
+
+    <!-- Transition Table -->
+    <div id="pda-transitions-section" class="hidden">
+      <h2>Transition Function δ</h2>
+      <div class="table-scroll">
+        <table id="transition-table">
+          <thead>
+            <tr>
+              <th>From</th>
+              <th>Input</th>
+              <th>Stack Top</th>
+              <th>To</th>
+              <th>Push (top→bottom)</th>
+              <th>Rule</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Simulation Result -->
+    <div id="simulation-result" class="hidden">
+      <h2>Simulation Result</h2>
+      <div id="verdict-banner"></div>
+
+      <div id="trace-container" class="hidden">
+        <h3>Step-by-Step Trace</h3>
+        <div id="trace-controls">
+          <button id="btn-prev" class="btn-ghost">◀ Prev</button>
+          <span id="trace-counter">Step 0 / 0</span>
+          <button id="btn-next" class="btn-ghost">Next ▶</button>
+          <button id="btn-play" class="btn-ghost">▶ Auto-play</button>
+        </div>
+
+        <div id="trace-display">
+          <div id="stack-viz">
+            <p class="viz-label">Stack (top ↑)</p>
+            <div id="stack-cells"></div>
+          </div>
+          <div id="step-info">
+            <div class="step-field"><span class="field-label">State</span><span id="sf-state"></span></div>
+            <div class="step-field"><span class="field-label">Remaining Input</span><span id="sf-input"></span></div>
+            <div class="step-field"><span class="field-label">Stack (top→bottom)</span><span id="sf-stack"></span></div>
+            <div class="step-field"><span class="field-label">Applied Rule</span><code id="sf-rule"></code></div>
+            <div class="step-field"><span class="field-label">Description</span><span id="sf-desc"></span></div>
+          </div>
+        </div>
+
+        <details id="full-trace-details">
+          <summary>Full trace log</summary>
+          <ol id="full-trace-list"></ol>
+        </details>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════ LOADING ══ -->
+<div id="loading-overlay" class="hidden">
+  <div class="spinner"></div>
+  <p>Processing…</p>
+</div>
+
+<!--
+  config.js is loaded FIRST so window.APP_CONFIG.API_BASE is set
+  before app.js runs any code.
+-->
+<script src="scripts/config.js"></script>
+<script src="scripts/app.js"></script>
+</body>
+</html>
